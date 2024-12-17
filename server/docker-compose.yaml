@@ -1,0 +1,53 @@
+
+version: "3.7"
+services:
+  mqtt5:
+    image: eclipse-mosquitto
+    container_name: mqtt5
+    ports:
+      - "1883:1883" #default mqtt port
+      - "9001:9001" #default mqtt port for websockets
+    volumes:
+      - ./config:/mosquitto/config:rw
+      - ./data:/mosquitto/data:rw
+      - ./log:/mosquitto/log:rw
+  mongo:
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: hoangndst
+      MONGO_INITDB_ROOT_PASSWORD: Hoang2002
+
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: hoangndst
+      ME_CONFIG_MONGODB_ADMINPASSWORD: Hoang2002
+      ME_CONFIG_MONGODB_URL: mongodb://hoangndst:Hoang2002@mongo:27017/
+  mqtt-backend:
+    container_name: mqtt-backend
+    image: 'hoangndst/mqtt-backend:v0.1.0'
+    restart: unless-stopped
+    ports:
+      - 3000:3000
+    environment:
+      MQTT_SERVER: mqtt5
+      MQTT_PORT: 1883
+      MQTT_USERNAME: hoangndst
+      MQTT_PASSWORD: Hoang2002
+      MONGODB_URL: mongodb://hoangndst:Hoang2002@mongo:27017/
+    volumes:
+      # So that Traefik can listen to the Docker events
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+
+volumes:
+  config:
+  data:
+  log:
+networks:
+  default:
+    name: mqtt5-network

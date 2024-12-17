@@ -1,0 +1,3 @@
+### 3. Chương trình hiển thị dữ liệu nhận được phía gateway (sử dụng các biểu đồ line chart, bar chart, pie chart để hiển thị)
+
+- Yêu cầu: Phần này ReactJS cho dễ, đã có code sẵn anh em chỉ nghiên cứu làm sao để lấy dữ liệu từ AMQP Server(RabbitMQ) từ ReactJS và gửi dữ liêu từ ReactJS đến AMQP Server(RabbitMQ). Nếu có thể thêm các rạng charts thì càng tốt, liên hệ với tôi(Hoàng) để biết thêm về thư viện vẽ chart.
