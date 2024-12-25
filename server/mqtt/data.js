@@ -1,10 +1,11 @@
 import { MongoClient } from "mongodb";
 import { mqttClient } from "./index.js";
+import { makeCall } from "../alerts/callAlert.js";
 
 const mongoUrl = process.env.MONGODB_URL;
 
-const dbName = "esp-gas";
-const collectionName = "esp-gas-collection";
+const dbName = "esp-fire";
+const collectionName = "esp-fire-collection";
 
 export const mongodbClient = new MongoClient(mongoUrl);
 
@@ -22,6 +23,11 @@ export const UpdateDateToDB = () => {
       });
       console.log("Inserted documents =>", result);
       console.log("Data: ", data, "Time: ", new Date().toLocaleString());
+
+      if (topic.includes("/gas") && data.value > 200) {
+        console.log("Fire detected! Initiating alert call...");
+        await makeCall();
+      }
     } catch (err) {
       console.error(err);
     }
