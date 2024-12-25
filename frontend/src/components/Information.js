@@ -59,9 +59,9 @@ function RealtimeChart() {
         {
           type: "realtime",
           realtime: {
-            delay: 5000,
-            duration: 30000,
-            refresh: 1000,
+            delay: 500,
+            duration: 50000,
+            refresh: 500,
           },
         },
       ],
@@ -71,7 +71,7 @@ function RealtimeChart() {
           type: "linear",
           ticks: {
             beginAtZero: true,
-            max: 1000, // Giới hạn cảm biến lửa
+            max: 1050, // Giới hạn cảm biến lửa
           },
         },
       ],
@@ -82,62 +82,16 @@ function RealtimeChart() {
         text: "Fire Sensor",
       },
     },
-  };  
-  // const options_2 = {
-  //   scales: {
-  //     xAxes: [
-  //       {
-  //         type: "realtime",
-  //         realtime: {
-  //           delay: 10000,
-  //           duration: 50000,
-  //           refresh: 1000,
-  //           // onRefresh: (chart) => {
-              
-  //           // },
-  //         },
-  //       },
-  //     ],
-  //     yAxes: [
-  //       {
-  //         id: 'y0',
-  //         type: 'linear',
-  //         position: 'left',
-  //         ticks: {
-  //           beginAtZero: true,
-  //           max: 1000,
-  //         },
-  //       },
-  //       {
-  //         id: 'y1',
-  //         type: 'linear',
-  //         position: 'right',
-  //         ticks: {
-  //           beginAtZero: true,
-  //           max: 10000,
-  //         },
-  //       },
-  //     ],
-  //   },
-  //   plugins: {
-  //     streaming: {
-  //       frameRate: 30,
-  //     },
-  //     title: {
-  //       display: true,
-  //       text: "Temperature Sensor",
-  //     }
-  //   },
-  // };
+  };
   const optionsTempHumidity = {
     scales: {
       xAxes: [
         {
           type: "realtime",
           realtime: {
-            delay: 5000,
-            duration: 30000,
-            refresh: 1000,
+            delay: 500,
+            duration: 50000,
+            refresh: 500,
           },
         },
       ],
@@ -148,16 +102,7 @@ function RealtimeChart() {
           position: "left",
           ticks: {
             beginAtZero: true,
-            max: 50, // Giới hạn nhiệt độ
-          },
-        },
-        {
-          id: "y1",
-          type: "linear",
-          position: "right",
-          ticks: {
-            beginAtZero: true,
-            max: 100, // Giới hạn độ ẩm
+            max: 40, // Giới hạn nhiệt độ
           },
         },
       ],
@@ -167,52 +112,6 @@ function RealtimeChart() {
         display: true,
         text: "Temperature Sensor",
       },
-    },
-  };  
-  const optionsGas = {
-    scales: {
-      xAxes: [
-        {
-          type: "realtime",
-          realtime: {
-            delay: 10000,
-            duration: 50000,
-            refresh: 1000,
-            // onRefresh: (chart) => {
-             
-            // },
-          },
-        },
-      ],
-      yAxes: [
-        {
-          id: 'y0',
-          type: 'linear',
-          position: 'left',
-          ticks: {
-            beginAtZero: true,
-            max: 1000,
-          },
-        },
-        {
-          id: 'y1',
-          type: 'linear',
-          position: 'right',
-          ticks: {
-            beginAtZero: true,
-            max: 10000,
-          },
-        },
-      ],
-    },
-    plugins: {
-      title: {
-        display: true,
-        text: "Gas Sensor",
-      },
-      streaming: {
-        frameRate: 30,
-      }
     },
   };
 
@@ -224,8 +123,7 @@ function RealtimeChart() {
           marginBottom: "10px",
           maxWidth: "100%",
           flexGrow: 1,
-          backgroundColor: (theme) =>
-            theme.palette.mode === "dark" ? "#1A2027" : "#fff",
+          backgroundColor: (theme) => (theme.palette.mode === "dark" ? "#1A2027" : "#fff"),
         }}
       >
         <Typography
@@ -235,15 +133,29 @@ function RealtimeChart() {
         >
           Fire Sensor
         </Typography>
-        <Grid container spacing={2}>
-          <Grid item xs={12} md={6}>
-            <Line data={chartData_1} options={optionsFire} />
+        <Grid
+          container
+          spacing={2}
+        >
+          <Grid
+            item
+            xs={12}
+            md={6}
+          >
+            <Line
+              data={chartData_1}
+              options={optionsFire}
+            />
           </Grid>
-          <Grid item xs={12} md={6}>
-            <Line data={chartData_2} options={optionsTempHumidity} />
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <Line data={chartData_3} options={optionsGas} />
+          <Grid
+            item
+            xs={12}
+            md={6}
+          >
+            <Line
+              data={chartData_2}
+              options={optionsTempHumidity}
+            />
           </Grid>
         </Grid>
       </Paper>
