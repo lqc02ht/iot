@@ -218,12 +218,6 @@ function RealtimeChart() {
 
   return (
     <div style={{ width: "100%", margin: "0 auto", height: "100%" }}>
-      <Alert
-        style={{ marginBottom: "10px", fontWeight: "bold" }}
-        severity="info"
-      >
-        It's beta, don't expect too much!
-      </Alert>
       <Paper
         sx={{
           p: 1,

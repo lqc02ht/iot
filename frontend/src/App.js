@@ -80,36 +80,18 @@ function App() {
         <header className="App-header">
           <Paper sx={{ minWidth: "100%", flexGrow: 1, backgroundColor: (theme) => theme.palette.mode === "dark" ? "#1A2027" : "#fff" }}>
             <TabContext value={value}>
-              <Box sx={{ borderBottom: 0, borderColor: "divider" }}>
-                <TabList onChange={handleChange} aria-label="Apartment Tabs" centered>
-                  <Tab sx={{ fontWeight: "Bold" }} label="Apartment 1" value="1" />
-                  <Tab sx={{ fontWeight: "Bold" }} label="Apartment 2" value="2" />
-                  <Tab sx={{ fontWeight: "Bold" }} label="Apartment 3" value="3" />
-                </TabList>
-              </Box>
               {/* Nút gọi điện */}
               <Box sx={{ display: "flex", justifyContent: "center", marginTop: 2 }}>
                 <Button
                   variant="contained"
                   color="error"
                   onClick={makeCall}
-                  disabled={!fireAlert} // Nút chỉ kích hoạt khi cảnh báo cháy
+                  // disabled={!fireAlert} // Nút chỉ kích hoạt khi cảnh báo cháy
                 >
                   Call Firefighters
                 </Button>
               </Box>
-              {/* Apartment 1 Tab */}
-              <TabPanel value="1">
                 <RealtimeChart />
-              </TabPanel>
-              {/* Apartment 2 Tab */}
-              <TabPanel value="2">
-                <RealtimeChart />
-              </TabPanel>
-              {/* Apartment 3 Tab */}
-              <TabPanel value="3">
-                <RealtimeChart />
-              </TabPanel>
             </TabContext>
           </Paper>
         </header>
