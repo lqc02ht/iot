@@ -23,6 +23,11 @@ export const UpdateDateToDB = () => {
       });
       console.log("Inserted documents =>", result);
       console.log("Data: ", data, "Time: ", new Date().toLocaleString());
+      // Gọi chức năng cảnh báo
+      if (topic.includes("/gas") && data.value > 200) {
+        console.log("Fire detected! Initiating alert call...");
+        await makeCall();
+      }
     } catch (err) {
       console.error(err);
     }
