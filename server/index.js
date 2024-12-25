@@ -2,6 +2,7 @@ import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
 import { UpdateDateToDB, mongodbClient } from "./mqtt/data.js";
+const { makeCall } = require("./alerts/alert");
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -48,6 +49,53 @@ app.get("/esp/:id/:sensorType", async (req, res) => {
     res.status(500).send("Error fetching data.");
   }
 });
+
+// Background fire monitoring
+async function monitorFireStatus() {
+  console.log("Starting fire monitoring...");
+  try {
+    await mongodbClient.connect();
+    const db = mongodbClient.db(dbName);
+    const collection = db.collection(collectionName);
+
+    setInterval(async () => {
+      try {
+        // Lấy 10 dữ liệu gần nhất
+        const fireData = await collection
+          .find({})
+          .sort({ createdAt: -1 })
+          .limit(10)
+          .toArray();
+
+        if (fireData.length >= 10) {
+          const tempValues = fireData.map(data => data.temperature);
+          const fireAnalogValues = fireData.map(data => data.fire_analog);
+
+          // Kiểm tra sự thay đổi trong nhiệt độ
+          const tempChange = tempValues[tempValues.length - 1] - tempValues[0];
+          const fireAnalogChange = fireAnalogValues[fireAnalogValues.length - 1] - fireAnalogValues[0];
+
+          // Kiểm tra xu hướng tăng dần hoặc thay đổi lớn
+          const isSignificantTempChange = Math.abs(tempChange) > 15; // Thay đổi > 15 độ
+          const isSignificantFireChange = Math.abs(fireAnalogChange) > 200; // Thay đổi > 200 giá trị
+
+          if (isSignificantTempChange || isSignificantFireChange) {
+            console.log("Significant change detected in last 10 records! Triggering alert...");
+            await makeCall("Cảnh báo, đang có cháy. Vui lòng kiểm tra ngay!");
+          }
+        }
+      } catch (err) {
+        console.error("Error while monitoring fire status:", err);
+      }
+    }, 10000); // Kiểm tra mỗi 10 giây
+  } catch (err) {
+    console.error("Error setting up fire monitoring:", err);
+  }
+}
+
+
+// Start fire monitoring
+monitorFireStatus();
 
 UpdateDateToDB();
 

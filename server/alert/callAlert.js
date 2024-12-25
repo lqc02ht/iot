@@ -6,9 +6,8 @@ async function makeCall() {
     const call = await twilio.calls.create({
       twiml: `
         <Response>
-          <Say language="vi-VN" voice="alice">Cảnh báo, đang có cháy</Say>
-          <Pause length="3"></Pause>
-          <Say>Bạn cần di chuyển ngay khỏi đấy và gọi cứu hoả đến.</Say>
+          <Say language="vi-VN" voice="alice">Cảnh báo, đang có cháy. 
+                Bạn cần di chuyển ngay khỏi đấy và gọi cứu hoả đến.</Say>
         </Response>
       `,
       from: '+12184754446',
