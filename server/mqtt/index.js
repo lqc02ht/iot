@@ -28,3 +28,4 @@ mqttClient.on("close", () => {
   console.log("MQTT connection closed. Reconnecting...");
   mqttClient.reconnect();
 });
+

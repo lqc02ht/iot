@@ -1,5 +1,6 @@
 import { MongoClient } from "mongodb";
 import { mqttClient } from "./index.js";
+import { makeCall } from "../alerts/callAlert.js";
 
 const mongoUrl = process.env.MONGODB_URL;
 
@@ -20,6 +21,8 @@ export const UpdateDateToDB = () => {
         ...data,
         createdAt: new Date(),
       });
+      console.log("Inserted documents =>", result);
+      console.log("Data: ", data, "Time: ", new Date().toLocaleString());
     } catch (err) {
       console.error(err);
     }
