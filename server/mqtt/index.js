@@ -9,17 +9,11 @@ export const mqttClient = mqtt.connect(`mqtt://${process.env.MQTT_SERVER}:${proc
   password: process.env.MQTT_PASSWORD,
 });
 
-const topic = [1, 2, 3];
-const sensorTypes = ["fire", "temperature", "gas"];
+const topic = "random1";
 
 mqttClient.on("connect", () => {
-  topic.forEach((t) => {
-    sensorTypes.forEach((type) => {
-      const topic = `/esp/${sensorId}/${type}`;
-      console.log(`Subscribing to topic: ${topic}`);
-      mqttClient.subscribe(topic);
-    });
-  });
+  console.log(`Subscribing to topic: ${topic}`);
+  mqttClient.subscribe(topic);
 });
 
 // Handle errors
