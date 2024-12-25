@@ -7,99 +7,169 @@ import ChartContext from "../context/ChartContext";
 function RealtimeChart() {
   const [chartData_1, chartData_2, chartData_3] = useContext(ChartContext);
 
-  const options_1 = {
+  // const options_1 = {
+  //   scales: {
+  //     xAxes: [
+  //       {
+  //         type: "realtime",
+  //         realtime: {
+  //           delay: 10000,
+  //           duration: 50000,
+  //           refresh: 1000,
+  //           // onRefresh: (chart) => {
+  //           //   chart.chart.data.datasets
+  //           // },
+  //         },
+  //       },
+  //     ],
+  //     yAxes: [
+  //       {
+  //         id: 'y0',
+  //         type: 'linear',
+  //         position: 'left',
+  //         ticks: {
+  //           beginAtZero: true,
+  //           max: 1000,
+  //         },
+  //       },
+  //       {
+  //         id: 'y1',
+  //         type: 'linear',
+  //         position: 'right',
+  //         ticks: {
+  //           beginAtZero: true,
+  //           max: 10000,
+  //         },
+  //       },
+  //     ],
+  //   },
+  //   plugins: {
+  //     streaming: {
+  //       frameRate: 30,
+  //     },
+  //     title: {
+  //       display: true,
+  //       text: "Fire Sensor",
+  //     }
+  //   },
+  // };
+  const optionsFire = {
     scales: {
       xAxes: [
         {
           type: "realtime",
           realtime: {
-            delay: 10000,
-            duration: 50000,
+            delay: 5000,
+            duration: 30000,
             refresh: 1000,
-            // onRefresh: (chart) => {
-            //   chart.chart.data.datasets
-            // },
           },
         },
       ],
       yAxes: [
         {
-          id: 'y0',
-          type: 'linear',
-          position: 'left',
+          id: "y0",
+          type: "linear",
           ticks: {
             beginAtZero: true,
-            max: 1000,
-          },
-        },
-        {
-          id: 'y1',
-          type: 'linear',
-          position: 'right',
-          ticks: {
-            beginAtZero: true,
-            max: 10000,
+            max: 1000, // Giới hạn cảm biến lửa
           },
         },
       ],
     },
     plugins: {
-      streaming: {
-        frameRate: 30,
-      },
       title: {
         display: true,
-        text: "Gas Sensor 1",
-      }
+        text: "Fire Sensor",
+      },
     },
-  };
-  const options_2 = {
-    scales: {
-      xAxes: [
-        {
-          type: "realtime",
-          realtime: {
-            delay: 10000,
-            duration: 50000,
-            refresh: 1000,
-            // onRefresh: (chart) => {
+  };  
+  // const options_2 = {
+  //   scales: {
+  //     xAxes: [
+  //       {
+  //         type: "realtime",
+  //         realtime: {
+  //           delay: 10000,
+  //           duration: 50000,
+  //           refresh: 1000,
+  //           // onRefresh: (chart) => {
               
-            // },
+  //           // },
+  //         },
+  //       },
+  //     ],
+  //     yAxes: [
+  //       {
+  //         id: 'y0',
+  //         type: 'linear',
+  //         position: 'left',
+  //         ticks: {
+  //           beginAtZero: true,
+  //           max: 1000,
+  //         },
+  //       },
+  //       {
+  //         id: 'y1',
+  //         type: 'linear',
+  //         position: 'right',
+  //         ticks: {
+  //           beginAtZero: true,
+  //           max: 10000,
+  //         },
+  //       },
+  //     ],
+  //   },
+  //   plugins: {
+  //     streaming: {
+  //       frameRate: 30,
+  //     },
+  //     title: {
+  //       display: true,
+  //       text: "Temperature Sensor",
+  //     }
+  //   },
+  // };
+  const optionsTempHumidity = {
+    scales: {
+      xAxes: [
+        {
+          type: "realtime",
+          realtime: {
+            delay: 5000,
+            duration: 30000,
+            refresh: 1000,
           },
         },
       ],
       yAxes: [
         {
-          id: 'y0',
-          type: 'linear',
-          position: 'left',
+          id: "y0",
+          type: "linear",
+          position: "left",
           ticks: {
             beginAtZero: true,
-            max: 1000,
+            max: 50, // Giới hạn nhiệt độ
           },
         },
         {
-          id: 'y1',
-          type: 'linear',
-          position: 'right',
+          id: "y1",
+          type: "linear",
+          position: "right",
           ticks: {
             beginAtZero: true,
-            max: 10000,
+            max: 100, // Giới hạn độ ẩm
           },
         },
       ],
     },
     plugins: {
-      streaming: {
-        frameRate: 30,
-      },
       title: {
         display: true,
-        text: "Gas Sensor 2",
-      }
+        text: "Temperature Sensor",
+      },
     },
-  };
-  const options_3 = {
+  };  
+  const optionsGas = {
     scales: {
       xAxes: [
         {
@@ -138,7 +208,7 @@ function RealtimeChart() {
     plugins: {
       title: {
         display: true,
-        text: "Gas Sensor 3",
+        text: "Gas Sensor",
       },
       streaming: {
         frameRate: 30,
@@ -169,17 +239,17 @@ function RealtimeChart() {
           color="text.first"
           gutterBottom
         >
-          Gas Sensor
+          Fire Sensor
         </Typography>
         <Grid container spacing={2}>
           <Grid item xs={12} md={6}>
-            <Line data={chartData_1} options={options_1} />
+            <Line data={chartData_1} options={optionsFire} />
           </Grid>
           <Grid item xs={12} md={6}>
-            <Line data={chartData_2} options={options_2} />
+            <Line data={chartData_2} options={optionsTempHumidity} />
           </Grid>
           <Grid item xs={12} md={6}>
-            <Line data={chartData_3} options={options_3} />
+            <Line data={chartData_3} options={optionsGas} />
           </Grid>
         </Grid>
       </Paper>
