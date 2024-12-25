@@ -28,7 +28,7 @@ services:
       ME_CONFIG_MONGODB_URL: mongodb://hungtran:duyhungtran14022002@mongo:27017/
   mqtt-backend:
     container_name: mqtt-backend
-    image: "hungtranit14/mqtt-backend"
+    image: "hungtranit14/mqtt-backend:1.1"
     restart: unless-stopped
     ports:
       - 3000:3000

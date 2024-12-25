@@ -3,8 +3,8 @@ import { mqttClient } from "./index.js";
 
 const mongoUrl = process.env.MONGODB_URL;
 
-const dbName = "esp-gas";
-const collectionName = "esp-gas-collection";
+const dbName = "esp-fire";
+const collectionName = "esp-fire-collection";
 
 export const mongodbClient = new MongoClient(mongoUrl);
 
