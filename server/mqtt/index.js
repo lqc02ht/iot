@@ -15,7 +15,7 @@ const sensorTypes = ["fire", "temperature", "gas"];
 mqttClient.on("connect", () => {
   topic.forEach((t) => {
     sensorTypes.forEach((type) => {
-      const topic = `/esp/${sensorId}/${type}`;
+      const topic = `/esp/${t}/${type}`;
       console.log(`Subscribing to topic: ${topic}`);
       mqttClient.subscribe(topic);
     });
