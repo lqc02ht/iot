@@ -44,7 +44,6 @@ app.get("/random1", async (req, res) => {
   }
 });
 
-
 async function monitorFireStatus() {
   console.log("Starting fire monitoring...");
   let lastCallTime = Date.now(); // Thời gian lần gọi cuối
@@ -58,7 +57,7 @@ async function monitorFireStatus() {
     setInterval(async () => {
       try {
         // Lấy 50 dữ liệu gần nhất
-        const fireData = await collection.find({}).sort({ createdAt: -1 }).limit(50).toArray();
+        const fireData = await collection.find({}).sort({ createdAt: -1 }).limit(10).toArray();
 
         if (fireData.length > 0) {
           const tempValues = fireData.map((data) => data.temperature);
@@ -67,9 +66,9 @@ async function monitorFireStatus() {
           // Kiểm tra điều kiện nhiệt độ và fire analog
           const tempAlert = temperatureAlert(tempValues, lastTemp);
           const fireAlert = fireAlertFunc(fireAnalogValues);
-
+          console.log("Alert temperature:", tempAlert);
           // Nếu cả hai điều kiện đều đạt, thực hiện gọi
-          if (tempAlert && fireAlert) {
+          if (fireAlert && tempAlert) {
             const currentTime = Date.now();
 
             // Kiểm tra nếu đã qua 30 giây kể từ lần gọi cuối
@@ -92,15 +91,23 @@ async function monitorFireStatus() {
   }
 }
 
-function temperatureAlert(tempValues, lastTemp) {
-  if (!lastTemp) lastTemp = tempValues[0]; // Nếu không có nhiệt độ trước đó, sử dụng giá trị đầu tiên
+function temperatureAlert(tempValues) {
+  if (tempValues.length < 10) return false; // Không đủ dữ liệu để tính toán
 
-  // Lấy nhiệt độ trung bình hiện tại
-  const currentTemp = tempValues[0];
-  const tempDiff = Math.abs(currentTemp - lastTemp); // Tính chênh lệch so với nhiệt độ trước
+  // Tính sự thay đổi nhiệt độ giữa các giá trị liên tiếp
+  const deltas = [];
+  for (let i = 1; i < tempValues.length; i++) {
+    deltas.push(tempValues[i] - tempValues[i - 1]);
+  }
+  // Kiểm tra nếu các giá trị delta tăng dần
+  const isTempIncreasing = deltas.every((delta, index) => index === 0 || delta + 0.1 >= deltas[index - 1]);
 
-  console.log(`Temperature difference: ${tempDiff}°C`);
-  return tempDiff >= 0.5; // Báo động nếu chênh lệch >= 0.5 độ
+  // Tính tổng độ lệch (delta) để xem biến động có đáng kể không
+  const diffTemp = Math.max(...tempValues) - Math.min(...tempValues);
+  console.log("Temperature increasing:", isTempIncreasing);
+  console.log("Change in temperature:", diffTemp);
+  // Kiểm tra nếu tổng độ lệch vượt ngưỡng (ví dụ: 30) và delta tăng dần
+  return isTempIncreasing && diffTemp >= 0.5;
 }
 
 function fireAlertFunc(fireAnalogValues) {
