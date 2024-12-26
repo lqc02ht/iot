@@ -57,6 +57,7 @@ function RealtimeChart() {
           ticks: {
             beginAtZero: true,
             max: 40, // Giới hạn nhiệt độ
+            min: 0
           },
         },
       ],
