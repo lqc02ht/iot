@@ -56,19 +56,13 @@ async function monitorFireStatus() {
         // Lấy 10 dữ liệu gần nhất
         const fireData = await collection.find({}).sort({ createdAt: -1 }).limit(20).toArray();
 
-        if (fireData.length >= 10) {
+        if (fireData.length >= 20) {
           const tempValues = fireData.map((data) => data.temperature);
+
           const fireAnalogValues = fireData.map((data) => data.fire_analog);
-
-          // Kiểm tra sự thay đổi trong nhiệt độ
-          const tempChange = tempValues[tempValues.length - 1] - tempValues[0];
-          const fireAnalogChange = fireAnalogValues[fireAnalogValues.length - 1] - fireAnalogValues[0];
-
-          // Kiểm tra xu hướng tăng dần hoặc thay đổi lớn
-          const isSignificantTempChange = Math.abs(tempChange) > 15; // Thay đổi > 15 độ
-          const isSignificantFireChange = Math.abs(fireAnalogChange) > 200; // Thay đổi > 200 giá trị
-
-          if (isSignificantTempChange || isSignificantFireChange) {
+          const tempAlert = temperatureAlert(tempValues);
+          const fireAlert = fireAlert(fireAnalogValues);
+          if (tempAlert && fireAlert) {
             console.log("Significant change detected in last 10 records! Triggering alert...");
             await makeCall("Cảnh báo, đang có cháy. Vui lòng kiểm tra ngay!");
           }
@@ -76,12 +70,66 @@ async function monitorFireStatus() {
       } catch (err) {
         console.error("Error while monitoring fire status:", err);
       }
-    }, 10000); // Kiểm tra mỗi 10 giây
+    }, 5000); // Kiểm tra mỗi 5 giây
   } catch (err) {
     console.error("Error setting up fire monitoring:", err);
   }
 }
+function temperatureAlert(tempValues) {
+  const tempAvg = tempValues.reduce((acc, val) => acc + val, 0) / tempValues.length;
+  if (tempAvg < 45) {
+    return false;
+  }
 
+  const maxTemp = Math.max(...tempValues);
+  const minTemp = Math.min(...tempValues);
+
+  // Tính trung bình giữa nhiệt độ cao nhất và thấp nhất
+  const avgTempThreshold = (maxTemp + minTemp) / 2;
+
+  // Chia dữ liệu thành hai nhóm dựa trên trung bình nhiệt độ
+  const highTemps = tempValues.filter((temp) => temp >= avgTempThreshold); // Nhiệt độ lớn hơn hoặc bằng trung bình
+  const lowTemps = tempValues.filter((temp) => temp < avgTempThreshold); // Nhiệt độ nhỏ hơn trung bình
+
+  // Tính nhiệt độ trung bình trong mỗi nhóm
+  const avgHighTemp = highTemps.reduce((acc, val) => acc + val, 0) / highTemps.length;
+  const avgLowTemp = lowTemps.reduce((acc, val) => acc + val, 0) / lowTemps.length;
+
+  // Tính sự thay đổi nhiệt độ trung bình giữa nhóm cao và nhóm thấp
+  const tempAvgChange = avgHighTemp - avgLowTemp;
+
+  return tempAvgChange > 20;
+}
+function fireAlert(fireAnalogValues) {
+  const fireAnalogAvg = fireAnalogValues.reduce((acc, val) => acc + val, 0) / fireAnalogValues.length;
+
+  // Nếu giá trị analog trung bình thấp hơn 500, lập tức trả về false
+  if (fireAnalogAvg < 500) {
+    return false;
+  }
+  const maxFireAnalog = Math.max(...fireAnalogValues);
+  const minFireAnalog = Math.min(...fireAnalogValues);
+
+  // Tính trung bình giữa giá trị analog lớn nhất và nhỏ nhất
+  const avgFireAnalogThreshold = (maxFireAnalog + minFireAnalog) / 2;
+
+  // Chia dữ liệu analog thành hai nhóm
+  const highFireAnalog = fireAnalogValues.filter((val) => val >= avgFireAnalogThreshold);
+  const lowFireAnalog = fireAnalogValues.filter((val) => val < avgFireAnalogThreshold);
+
+  // Tính trung bình giá trị analog cho mỗi nhóm
+  const avgHighFireAnalog =
+    highFireAnalog.length > 0 ? highFireAnalog.reduce((acc, val) => acc + val, 0) / highFireAnalog.length : 0;
+
+  const avgLowFireAnalog =
+    lowFireAnalog.length > 0 ? lowFireAnalog.reduce((acc, val) => acc + val, 0) / lowFireAnalog.length : 0;
+
+  // Tính sự thay đổi trung bình giữa nhóm analog cao và thấp
+  const fireAnalogAvgChange = avgHighFireAnalog - avgLowFireAnalog;
+
+  // Kiểm tra sự thay đổi giá trị analog có đáng kể không
+  return fireAnalogAvgChange > 200;
+}
 // Start fire monitoring
 monitorFireStatus();
 
