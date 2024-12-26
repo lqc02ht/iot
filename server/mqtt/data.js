@@ -20,6 +20,7 @@ export const UpdateDateToDB = () => {
         ...data,
         createdAt: new Date(),
       });
+      console.log(result);
     } catch (err) {
       console.error(err);
     }
