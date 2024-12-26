@@ -3,8 +3,8 @@ import { mqttClient } from "./index.js";
 
 const mongoUrl = process.env.MONGODB_URL;
 
-const dbName = "esp-fire";
-const collectionName = "esp-fire-collection";
+const dbName = "random1";
+const collectionName = "random1";
 
 export const mongodbClient = new MongoClient(mongoUrl);
 
@@ -20,8 +20,6 @@ export const UpdateDateToDB = () => {
         ...data,
         createdAt: new Date(),
       });
-      console.log("Inserted documents =>", result);
-      console.log("Data: ", data, "Time: ", new Date().toLocaleString());
     } catch (err) {
       console.error(err);
     }

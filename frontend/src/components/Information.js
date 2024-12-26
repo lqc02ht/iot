@@ -1,58 +1,12 @@
-import { Grid, Paper, Alert, Typography } from "@mui/material";
-import React, { useState, useEffect, useContext } from "react";
+import { Grid, Paper, Typography } from "@mui/material";
+import React, { useContext } from "react";
 import { Line } from "react-chartjs-2";
 import "chartjs-plugin-streaming";
 import ChartContext from "../context/ChartContext";
 
 function RealtimeChart() {
-  const [chartData_1, chartData_2, chartData_3] = useContext(ChartContext);
+  const [chartData_1, chartData_2] = useContext(ChartContext);
 
-  // const options_1 = {
-  //   scales: {
-  //     xAxes: [
-  //       {
-  //         type: "realtime",
-  //         realtime: {
-  //           delay: 10000,
-  //           duration: 50000,
-  //           refresh: 1000,
-  //           // onRefresh: (chart) => {
-  //           //   chart.chart.data.datasets
-  //           // },
-  //         },
-  //       },
-  //     ],
-  //     yAxes: [
-  //       {
-  //         id: 'y0',
-  //         type: 'linear',
-  //         position: 'left',
-  //         ticks: {
-  //           beginAtZero: true,
-  //           max: 1000,
-  //         },
-  //       },
-  //       {
-  //         id: 'y1',
-  //         type: 'linear',
-  //         position: 'right',
-  //         ticks: {
-  //           beginAtZero: true,
-  //           max: 10000,
-  //         },
-  //       },
-  //     ],
-  //   },
-  //   plugins: {
-  //     streaming: {
-  //       frameRate: 30,
-  //     },
-  //     title: {
-  //       display: true,
-  //       text: "Fire Sensor",
-  //     }
-  //   },
-  // };
   const optionsFire = {
     scales: {
       xAxes: [
