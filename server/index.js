@@ -53,18 +53,28 @@ async function monitorFireStatus() {
 
     setInterval(async () => {
       try {
-        // Lấy 10 dữ liệu gần nhất
+        // Lấy 20 dữ liệu gần nhất
         const fireData = await collection.find({}).sort({ createdAt: -1 }).limit(20).toArray();
 
         if (fireData.length >= 20) {
           const tempValues = fireData.map((data) => data.temperature);
-
           const fireAnalogValues = fireData.map((data) => data.fire_analog);
+
           const tempAlert = temperatureAlert(tempValues);
           const fireAlert = fireAlert(fireAnalogValues);
+
+          // Kiểm tra điều kiện phát hiện cháy
           if (tempAlert && fireAlert) {
-            console.log("Significant change detected in last 10 records! Triggering alert...");
-            await makeCall("Cảnh báo, đang có cháy. Vui lòng kiểm tra ngay!");
+            const currentTime = Date.now();
+
+            // Kiểm tra nếu đã qua 5 phút (300000ms) kể từ lần gọi cuối
+            if (currentTime - lastCallTime >= 300000) {
+              console.log("Fire condition detected! Triggering alert...");
+              await makeCall();
+              lastCallTime = currentTime; // Cập nhật thời gian gọi
+            } else {
+              console.log("Fire condition detected but call is throttled.");
+            }
           }
         }
       } catch (err) {
